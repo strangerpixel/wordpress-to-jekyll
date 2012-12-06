@@ -76,14 +76,19 @@ class WordpressToJekyll {
 		$post['meta']['title'] = (string) $item->title;
 		
 		$tags = array();
+		$categories = array();
 
 		if ($item->category)
 		{
-			foreach ($item->category as $tag)
+			foreach ($item->category as $tax)
 			{
-				if ( (string) $tag['domain'] === 'post_tag')
+				if ( (string) $tax['domain'] === 'post_tag')
 				{
-					$tags[] = (string) $tag['nicename'];
+					$tags[] = (string) $tax['nicename'];
+				} 
+				elseif ( (string) $tax['domain'] === 'category')
+				{
+					$categories[] = (string) $tax['nicename'];
 				}
 			}
 		}
@@ -91,6 +96,11 @@ class WordpressToJekyll {
 		if ( ! empty($tags))
 		{
 			$post['meta']['tags'] = $tags;
+		}
+
+		if ( ! empty($categories))
+		{
+			$post['meta']['categories'] = $categories;
 		}
 
 		$content = $item->children($namespaces['content']);
